@@ -134,18 +134,32 @@ export const loginUser = async (email, password) => {
 // Helper function to get user profile
 export const getUserProfile = async (userId) => {
   try {
-    const { data, error } = await supabase
+    // Get user data from users table (includes profile_picture_url)
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("id, full_name, email, role, profile_picture_url")
+      .eq("id", parseInt(userId))
+      .single();
+
+    if (userError) {
+      throw userError;
+    }
+
+    // Try to get additional profile data from profiles table if it exists
+    const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("*")
       .eq("user_id", parseInt(userId))
       .single();
 
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 is "not found" error
-      throw error;
-    }
+    // Combine user data with profile data (profiles table data takes precedence)
+    const combinedData = {
+      ...userData,
+      ...(profileData || {}),
+      user_id: userData.id, // Ensure user_id is set for compatibility
+    };
 
-    return data;
+    return combinedData;
   } catch (error) {
     console.error("Profile fetch error:", error);
     return null;
@@ -244,7 +258,21 @@ export const uploadProfilePicture = async (userId, file) => {
       .from("profile-pictures")
       .getPublicUrl(filePath);
 
-    return { success: true, url: urlData.publicUrl };
+    const publicUrl = urlData.publicUrl;
+
+    // Update user profile with new image URL directly in users table
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({
+        profile_picture_url: publicUrl,
+      })
+      .eq("id", userId);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    return { success: true, url: publicUrl };
   } catch (error) {
     console.error("Image upload error:", error);
     return { success: false, error: error.message };
@@ -1155,6 +1183,303 @@ export const getDietPlanDetails = async (dietPlanId) => {
     return { success: true, data };
   } catch (error) {
     console.error("Get diet plan details error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// ==================== MEMBER WORKOUT FUNCTIONS ====================
+
+// Helper function to get member's assigned workouts
+export const getMemberAssignedWorkouts = async (memberId) => {
+  try {
+    const { data, error } = await supabase
+      .from("workout_assignments")
+      .select(
+        `
+        *,
+        workout:workout_id (
+          id,
+          name,
+          description,
+          category,
+          difficulty_level,
+          duration_minutes,
+          target_muscle_groups,
+          equipment_needed,
+          workout_exercises (
+            id,
+            exercise_name,
+            sets,
+            reps,
+            weight_kg,
+            rest_seconds,
+            instructions,
+            order_index
+          )
+        ),
+        trainer:trainer_id (
+          id,
+          full_name,
+          email
+        )
+      `
+      )
+      .eq("member_id", parseInt(memberId))
+      .eq("status", "active")
+      .order("assigned_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    // Sort exercises by order for each workout
+    data.forEach((assignment) => {
+      if (assignment.workout && assignment.workout.workout_exercises) {
+        assignment.workout.workout_exercises.sort(
+          (a, b) => a.order_index - b.order_index
+        );
+      }
+    });
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Get member assigned workouts error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Helper function to get specific workout details for member
+export const getMemberWorkoutDetails = async (workoutId, memberId) => {
+  try {
+    // First check if this workout is assigned to the member
+    const { data: assignment, error: assignmentError } = await supabase
+      .from("workout_assignments")
+      .select("*")
+      .eq("workout_id", parseInt(workoutId))
+      .eq("member_id", parseInt(memberId))
+      .eq("status", "active")
+      .single();
+
+    if (assignmentError || !assignment) {
+      return { success: false, error: "Workout not assigned to this member" };
+    }
+
+    // Get full workout details
+    const { data: workout, error: workoutError } = await supabase
+      .from("workouts")
+      .select(
+        `
+        *,
+        workout_exercises (
+          id,
+          exercise_name,
+          sets,
+          reps,
+          weight_kg,
+          rest_seconds,
+          instructions,
+          order_index
+        ),
+        trainer:trainer_id (
+          id,
+          full_name,
+          email
+        )
+      `
+      )
+      .eq("id", parseInt(workoutId))
+      .single();
+
+    if (workoutError) {
+      throw workoutError;
+    }
+
+    // Sort exercises by order
+    if (workout.workout_exercises) {
+      workout.workout_exercises.sort((a, b) => a.order_index - b.order_index);
+    }
+
+    // Add assignment details
+    workout.assignment = assignment;
+
+    return { success: true, data: workout };
+  } catch (error) {
+    console.error("Get member workout details error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Helper function to mark workout as completed by member
+export const completeWorkout = async (
+  workoutId,
+  memberId,
+  completionData = {}
+) => {
+  try {
+    // Add to member progress
+    const { error: progressError } = await supabase
+      .from("member_progress")
+      .insert([
+        {
+          member_id: parseInt(memberId),
+          trainer_id: completionData.trainerId,
+          workout_name: completionData.workoutName,
+          calories_burned: completionData.caloriesBurned || null,
+          duration_minutes: completionData.durationMinutes || null,
+          workout_rating: completionData.rating || null,
+          notes: completionData.notes || null,
+          workout_date: new Date().toISOString().split("T")[0],
+        },
+      ]);
+
+    if (progressError) {
+      throw progressError;
+    }
+
+    return { success: true, message: "Workout completed successfully!" };
+  } catch (error) {
+    console.error("Complete workout error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Helper function to assign trainers to existing members who don't have one
+export const assignTrainersToExistingMembers = async () => {
+  try {
+    console.log("🔄 Starting bulk trainer assignment for existing members...");
+
+    // Get all members who don't have an active trainer assignment
+    const { data: membersWithoutTrainers, error: membersError } = await supabase
+      .from("users")
+      .select(
+        `
+        id,
+        full_name,
+        email,
+        member_trainer_mapping!inner(id, status)
+      `
+      )
+      .eq("role", "member")
+      .not("member_trainer_mapping.status", "eq", "active");
+
+    if (membersError) {
+      console.error("Error fetching members without trainers:", membersError);
+
+      // Alternative query - get all members and check assignments separately
+      const { data: allMembers, error: allMembersError } = await supabase
+        .from("users")
+        .select("id, full_name, email")
+        .eq("role", "member");
+
+      if (allMembersError) {
+        throw allMembersError;
+      }
+
+      // Check each member for existing assignments
+      const membersNeedingTrainers = [];
+      for (const member of allMembers) {
+        const { data: existingAssignment } = await supabase
+          .from("member_trainer_mapping")
+          .select("id")
+          .eq("member_id", member.id)
+          .eq("status", "active")
+          .single();
+
+        if (!existingAssignment) {
+          membersNeedingTrainers.push(member);
+        }
+      }
+
+      console.log(
+        `📊 Found ${membersNeedingTrainers.length} members without trainers`
+      );
+
+      // Assign trainers to members who need them
+      const results = [];
+      for (const member of membersNeedingTrainers) {
+        console.log(
+          `🔄 Assigning trainer to member: ${member.full_name} (ID: ${member.id})`
+        );
+
+        const trainerResult = await getTrainerWithLeastMembers();
+        if (trainerResult.success && trainerResult.data) {
+          const assignResult = await assignMemberToTrainer(
+            member.id,
+            trainerResult.data.id
+          );
+          if (assignResult.success) {
+            console.log(
+              `✅ Assigned ${member.full_name} to trainer ${trainerResult.data.full_name}`
+            );
+            results.push({
+              member: member.full_name,
+              trainer: trainerResult.data.full_name,
+              success: true,
+            });
+          } else {
+            console.error(
+              `❌ Failed to assign ${member.full_name}:`,
+              assignResult.error
+            );
+            results.push({
+              member: member.full_name,
+              success: false,
+              error: assignResult.error,
+            });
+          }
+        } else {
+          console.warn(`⚠️ No trainers available for ${member.full_name}`);
+          results.push({
+            member: member.full_name,
+            success: false,
+            error: "No trainers available",
+          });
+        }
+      }
+
+      return { success: true, data: results };
+    }
+
+    return { success: true, data: [] };
+  } catch (error) {
+    console.error("Bulk trainer assignment error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Helper function to get member's assigned trainer details
+export const getMemberAssignedTrainer = async (memberId) => {
+  try {
+    const { data, error } = await supabase
+      .from("member_trainer_mapping")
+      .select(
+        `
+        id,
+        assigned_at,
+        status,
+        trainer:trainer_id (
+          id,
+          full_name,
+          email,
+          profile_picture_url
+        )
+      `
+      )
+      .eq("member_id", parseInt(memberId))
+      .eq("status", "active")
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        // No trainer assigned
+        return { success: true, data: null };
+      }
+      throw error;
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Get member assigned trainer error:", error);
     return { success: false, error: error.message };
   }
 };

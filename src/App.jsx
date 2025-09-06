@@ -14,6 +14,9 @@ import TrainerDashboard from "./client/pages/TrainerDashboard";
 import ManageMembers from "./client/pages/ManageMembers";
 import CreateWorkout from "./client/pages/CreateWorkout";
 import CreateDietPlan from "./client/pages/CreateDietPlan";
+import MemberWorkouts from "./client/pages/MemberWorkouts";
+import MemberWorkoutDetail from "./client/pages/MemberWorkoutDetail";
+import AdminUtils from "./client/pages/AdminUtils";
 import ForgotPassword from "./client/pages/ForgotPassword";
 import ResetPassword from "./client/pages/ResetPassword";
 import "./App.css";
@@ -34,6 +37,13 @@ function App() {
           <Route path="/exercises/:id" element={<ExerciseDetailsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
 
+          {/* Member Routes */}
+          <Route path="/member/workouts" element={<MemberWorkouts />} />
+          <Route
+            path="/member/workout/:workoutId"
+            element={<MemberWorkoutDetail />}
+          />
+
           {/* Password Reset Routes */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -46,6 +56,9 @@ function App() {
             path="/trainer/create-diet-plan"
             element={<CreateDietPlan />}
           />
+
+          {/* Admin Routes */}
+          <Route path="/admin/utils" element={<AdminUtils />} />
 
           {/* Add more routes as needed */}
         </Routes>

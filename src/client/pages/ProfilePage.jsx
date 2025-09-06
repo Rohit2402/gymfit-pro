@@ -6,12 +6,14 @@ import {
   updateUserProfile,
   getUserProfile,
   uploadProfilePicture,
+  getMemberAssignedTrainer,
 } from "../../lib/supabase";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [assignedTrainer, setAssignedTrainer] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -41,6 +43,11 @@ const ProfilePage = () => {
     const userData = JSON.parse(storedUser);
     setUser(userData);
     loadUserProfile(userData.id);
+
+    // Load trainer info for members
+    if (userData.role === "member") {
+      loadAssignedTrainer(userData.id);
+    }
   }, [navigate]);
 
   const loadUserProfile = async (userId) => {
@@ -72,6 +79,17 @@ const ProfilePage = () => {
       console.error("Error loading profile:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadAssignedTrainer = async (memberId) => {
+    try {
+      const result = await getMemberAssignedTrainer(memberId);
+      if (result.success) {
+        setAssignedTrainer(result.data);
+      }
+    } catch (error) {
+      console.error("Error loading assigned trainer:", error);
     }
   };
 
@@ -657,6 +675,202 @@ const ProfilePage = () => {
                   )}
                 </div>
               </div>
+
+              {/* Assigned Trainer (Members Only) */}
+              {user?.role === "member" && (
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    My Trainer
+                  </h3>
+
+                  {assignedTrainer ? (
+                    <div className="space-y-4">
+                      {/* Trainer Profile */}
+                      <div className="flex items-start space-x-4">
+                        <div className="flex-shrink-0">
+                          {assignedTrainer.trainer.profile_picture_url ? (
+                            <img
+                              src={assignedTrainer.trainer.profile_picture_url}
+                              alt={assignedTrainer.trainer.full_name}
+                              className="w-16 h-16 rounded-full object-cover border-2 border-orange-200"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                              <svg
+                                className="w-8 h-8 text-orange-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex-1">
+                          <h4 className="text-lg font-medium text-gray-900">
+                            {assignedTrainer.trainer.full_name}
+                          </h4>
+                          <p className="text-sm text-orange-600 font-medium">
+                            Personal Trainer
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Assigned on{" "}
+                            {new Date(
+                              assignedTrainer.assigned_at
+                            ).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Trainer Bio */}
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-sm text-gray-700">
+                          Your dedicated personal trainer is here to help you
+                          achieve your fitness goals.
+                        </p>
+                      </div>
+
+                      {/* Contact Information */}
+                      <div className="border-t pt-4">
+                        <h5 className="text-sm font-medium text-gray-900 mb-3">
+                          Contact Information
+                        </h5>
+                        <div className="space-y-3">
+                          {/* Email */}
+                          <div className="flex items-center space-x-3">
+                            <div className="flex-shrink-0">
+                              <svg
+                                className="w-5 h-5 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                Email
+                              </p>
+                              <a
+                                href={`mailto:${assignedTrainer.trainer.email}`}
+                                className="text-sm text-orange-600 hover:text-orange-700 transition duration-300">
+                                {assignedTrainer.trainer.email}
+                              </a>
+                            </div>
+                          </div>
+
+                          {/* Phone - Static for now */}
+                          <div className="flex items-center space-x-3">
+                            <div className="flex-shrink-0">
+                              <svg
+                                className="w-5 h-5 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">
+                                Phone
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Contact via email for phone number
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quick Contact Actions */}
+                      <div className="border-t pt-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <a
+                            href={`mailto:${assignedTrainer.trainer.email}?subject=Training Question`}
+                            className="flex items-center justify-center px-4 py-2 border border-orange-300 rounded-md text-sm font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 transition duration-300">
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                              />
+                            </svg>
+                            Send Email
+                          </a>
+                          <a
+                            href={`mailto:${assignedTrainer.trainer.email}?subject=Phone Number Request`}
+                            className="flex items-center justify-center px-4 py-2 border border-green-300 rounded-md text-sm font-medium text-green-700 bg-green-50 hover:bg-green-100 transition duration-300">
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                              />
+                            </svg>
+                            Request Phone
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* No Trainer Assigned */
+                    <div className="text-center py-8">
+                      <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <svg
+                          className="w-8 h-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
+                      <h4 className="text-lg font-medium text-gray-900 mb-2">
+                        No Trainer Assigned
+                      </h4>
+                      <p className="text-sm text-gray-600 mb-4">
+                        You haven't been assigned a trainer yet. Contact support
+                        for assistance.
+                      </p>
+                      <a
+                        href="mailto:support@gymfit.com"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 transition duration-300">
+                        Contact Support
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Recent Activity */}
               <div className="bg-white rounded-xl shadow-lg p-6">

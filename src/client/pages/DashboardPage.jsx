@@ -101,7 +101,7 @@ const DashboardPage = () => {
 
           {/* Dashboard Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Workouts Card */}
+            {/* My Workouts Card */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition duration-300">
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
@@ -114,21 +114,21 @@ const DashboardPage = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                     />
                   </svg>
                 </div>
                 <h3 className="ml-4 text-xl font-semibold text-gray-900">
-                  Workouts
+                  My Workouts
                 </h3>
               </div>
               <p className="text-gray-600 mb-4">
-                Track your workout sessions and monitor your progress.
+                View and start your assigned workout plans from your trainer.
               </p>
               <Link
-                to="/workouts"
+                to="/member/workouts"
                 className="inline-flex items-center text-orange-500 hover:text-orange-600 font-medium">
-                View Workouts
+                Start Workout
                 <svg
                   className="ml-1 h-4 w-4"
                   fill="none"
@@ -238,7 +238,7 @@ const DashboardPage = () => {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link
-                to="/workouts/new"
+                to="/member/workouts"
                 className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition duration-300 text-center">
                 Start Workout
               </Link>
