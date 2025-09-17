@@ -92,8 +92,8 @@ const Login = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <div className="flex-1 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-6 sm:space-y-8">
+      <div className="flex-1 flex items-center justify-center py-4 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-sm sm:max-w-md w-full space-y-4 sm:space-y-6">
           {/* Header */}
           <div className="text-center">
             <div className="mx-auto h-12 w-12 bg-orange-500 rounded-full flex items-center justify-center mb-4">
@@ -119,7 +119,7 @@ const Login = () => {
           </div>
 
           {/* Login Form */}
-          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
             {/* General Error Message */}
             {errors.general && (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">

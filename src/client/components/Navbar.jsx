@@ -28,8 +28,8 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation Links - HIDDEN ON MOBILE */}
+          <div className="hidden lg:flex items-center space-x-6">
             <Link
               to="/"
               className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-300">
@@ -42,23 +42,23 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Auth Buttons */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <Link
                 to="/login"
-                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-md text-sm font-medium transition duration-300">
                 Login
               </Link>
               <Link
                 to="/register"
-                className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-md text-sm font-medium transition duration-300">
                 Register
               </Link>
             </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button 
+          {/* Mobile menu button - VISIBLE ON MOBILE/TABLET */}
+          <div className="lg:hidden flex items-center">
+            <button
               onClick={toggleMobileMenu}
               className="text-gray-300 hover:text-white focus:outline-none focus:text-white transition duration-300"
               aria-label="Toggle mobile menu">
@@ -96,11 +96,12 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Navigation Menu */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen 
-            ? 'max-h-96 opacity-100' 
-            : 'max-h-0 opacity-0 overflow-hidden'
-        }`}>
+        <div
+          className={`lg:hidden transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen
+              ? "max-h-96 opacity-100"
+              : "max-h-0 opacity-0 overflow-hidden"
+          }`}>
           <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-800 rounded-lg mt-2 shadow-lg border border-gray-700">
             {/* Mobile Navigation Links */}
             <Link
@@ -115,7 +116,7 @@ const Navbar = () => {
               className="text-gray-300 hover:text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium transition duration-300">
               Contact Us
             </Link>
-            
+
             {/* Mobile Auth Buttons */}
             <div className="pt-4 pb-2 border-t border-gray-700">
               <div className="space-y-3">
@@ -139,8 +140,8 @@ const Navbar = () => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div 
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-[-1]"
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-[-1]"
           onClick={closeMobileMenu}
         />
       )}

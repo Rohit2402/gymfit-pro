@@ -32,15 +32,15 @@ const Home = () => {
               </p>
 
               {/* Call to Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 px-4">
+              <div className="flex flex-col gap-4 justify-center items-center pt-8 px-4 max-w-sm mx-auto sm:max-w-none sm:flex-row">
                 <Link
                   to="/register"
-                  className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:scale-105 shadow-xl text-center">
+                  className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-8 py-4 rounded-lg text-lg transition duration-300 transform hover:scale-105 shadow-xl text-center min-h-[50px] flex items-center justify-center">
                   Start Your Journey
                 </Link>
                 <Link
                   to="/login"
-                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:scale-105 text-center">
+                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 rounded-lg text-lg transition duration-300 transform hover:scale-105 text-center min-h-[50px] flex items-center justify-center">
                   Login to Continue
                 </Link>
               </div>
