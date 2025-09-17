@@ -19,11 +19,31 @@
 /* Custom component styles */
 @layer components {
   .btn-primary {
-    @apply bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition duration-300 transform hover:scale-105;
+    @apply bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-lg transition duration-300 transform hover:scale-105 text-sm sm:text-base;
   }
 
   .btn-secondary {
-    @apply border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-semibold px-6 py-3 rounded-lg transition duration-300;
+    @apply border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-lg transition duration-300 text-sm sm:text-base;
+  }
+
+  /* Mobile-friendly form inputs */
+  .form-input {
+    @apply w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300 text-sm sm:text-base;
+  }
+
+  /* Mobile-friendly cards */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4 sm:p-6 lg:p-8 border border-gray-200;
+  }
+
+  /* Mobile navigation links */
+  .nav-link {
+    @apply text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition duration-300;
+  }
+
+  /* Mobile-optimized containers */
+  .container-mobile {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
@@ -35,5 +55,36 @@
 
   .bg-gradient-dark {
     @apply bg-gradient-to-br from-gray-900 via-gray-800 to-black;
+  }
+
+  /* Mobile-specific utilities */
+  .text-responsive {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  .heading-responsive {
+    @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl;
+  }
+
+  .padding-mobile {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+
+  .margin-mobile {
+    @apply m-4 sm:m-6 lg:m-8;
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  /* Safe area for mobile browsers */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

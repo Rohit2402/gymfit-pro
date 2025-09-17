@@ -19,7 +19,7 @@ const Home = () => {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="space-y-8">
               {/* Main Heading */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight">
                 Transform Your
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
                   Fitness Journey
@@ -27,27 +27,27 @@ const Home = () => {
               </h1>
 
               {/* Subheading */}
-              <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 max-w-4xl mx-auto leading-relaxed px-4">
                 Track workouts, follow plans, and achieve your goals.
               </p>
 
               {/* Call to Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 px-4">
                 <Link
                   to="/register"
-                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-8 py-4 rounded-lg text-lg transition duration-300 transform hover:scale-105 shadow-xl">
+                  className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:scale-105 shadow-xl text-center">
                   Start Your Journey
                 </Link>
                 <Link
                   to="/login"
-                  className="border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 rounded-lg text-lg transition duration-300 transform hover:scale-105">
+                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg transition duration-300 transform hover:scale-105 text-center">
                   Login to Continue
                 </Link>
               </div>
 
               {/* Features Preview */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-9 mb-10">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mt-12 px-4">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center">
                   <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <svg
                       className="w-6 h-6 text-white"
@@ -62,15 +62,15 @@ const Home = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
                     Track Progress
                   </h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-sm sm:text-base">
                     Monitor your workouts and see your improvements over time
                   </p>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center">
                   <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <svg
                       className="w-6 h-6 text-white"
@@ -85,15 +85,15 @@ const Home = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
                     Custom Plans
                   </h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-sm sm:text-base">
                     Follow personalized workout plans tailored to your goals
                   </p>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 text-center">
                   <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <svg
                       className="w-6 h-6 text-white"
@@ -108,10 +108,10 @@ const Home = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
                     Achieve Goals
                   </h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-sm sm:text-base">
                     Set and reach your fitness milestones with our guidance
                   </p>
                 </div>

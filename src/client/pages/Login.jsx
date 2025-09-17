@@ -92,8 +92,8 @@ const Login = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
+      <div className="flex-1 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-6 sm:space-y-8">
           {/* Header */}
           <div className="text-center">
             <div className="mx-auto h-12 w-12 bg-orange-500 rounded-full flex items-center justify-center mb-4">
@@ -110,16 +110,16 @@ const Login = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               Welcome Back!
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Log in to continue your fitness journey.
             </p>
           </div>
 
           {/* Login Form */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
             {/* General Error Message */}
             {errors.general && (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
